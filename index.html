@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather Dashboard</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0b0c10;
+      color: #00FF00;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    h1 { margin-bottom: 20px; }
+    #weather {
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hi! Here's your local weather 🌤️</h1>
+  <div id="weather">Fetching your weather...</div>
+
+  <script>
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const apiKey = "4b17183372e32d80f601432c06223f7f";
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
+          .then(res => res.json())
+          .then(data => {
+            const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+            document.getElementById("weather").innerHTML =
+              `<h2>${data.name}, ${data.sys.country}</h2>
+               <img src="${icon}" alt="Weather icon" width="80" height="80"/>
+               <p>${data.weather[0].main}</p>
+               <p>🌡️ Temp: ${data.main.temp}°C</p>
+               <p>💧 Humidity: ${data.main.humidity}%</p>
+               <p>🌬️ Wind: ${data.wind.speed} m/s</p>`;
+          })
+          .catch(() => {
+            document.getElementById("weather").innerText = "Unable to fetch weather.";
+          });
+      }, () => {
+        document.getElementById("weather").innerText = "Location permission denied.";
+      });
+    } else {
+      document.getElementById("weather").innerText = "Geolocation not supported.";
+    }
+  </script>
+</body>
+</html>
