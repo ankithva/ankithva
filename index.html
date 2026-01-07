@@ -3,126 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <title>Ankith's Premium Weather Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* --- Global Styles --- */
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Fira Code', monospace;
+      font-family: 'Inter', sans-serif;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #0b0c10, #1f1f1f);
+      background: linear-gradient(135deg, #f0f0f5, #d9d9e6);
+      color: #1a1a1a;
       overflow: hidden;
-      color: #00FF00;
       transition: background 1s ease;
-    }
-
-    /* --- Background Animation Layer --- */
-    .bg {
-      position: absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      z-index:0;
-      opacity:0.2;
     }
 
     /* --- Dashboard Card --- */
     .dashboard {
       position: relative;
-      z-index:1;
-      background: rgba(0,0,0,0.7);
-      border-radius: 25px;
-      padding: 50px 60px;
+      z-index: 1;
+      background: rgba(255,255,255,0.75);
+      border-radius: 30px;
+      padding: 50px 40px;
       text-align: center;
-      box-shadow: 0 0 30px #00FF00;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       max-width: 450px;
       width: 90%;
-      backdrop-filter: blur(8px);
-      overflow: hidden;
+      backdrop-filter: blur(15px);
+      transition: all 0.3s ease;
+    }
+    .dashboard:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
     }
 
-    /* --- Typing Intro --- */
+    /* --- Intro Text --- */
     .intro {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      min-height: 40px;
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+      min-height: 50px;
+      color: #111;
     }
 
     /* --- Weather Icon --- */
     #weather-icon {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
+      margin: 15px 0;
     }
 
-    /* --- Weather Effects --- */
-    .raindrop {
-      position: absolute;
-      top: -10px;
-      width: 2px;
-      height: 10px;
-      background: #00BFFF;
-      opacity: 0.7;
-      animation: fall linear infinite;
+    /* --- Weather Info --- */
+    #weather h2 {
+      margin: 10px 0;
+      font-weight: 700;
+      font-size: 1.4rem;
     }
-
-    @keyframes fall {
-      to { transform: translateY(500px); opacity: 0; }
-    }
-
-    .cloud {
-      position: absolute;
-      width: 60px;
-      height: 40px;
-      background: #888;
-      border-radius: 50%;
-      opacity: 0.7;
-      animation: float linear infinite;
-    }
-
-    @keyframes float {
-      0% { transform: translateX(-100px); }
-      100% { transform: translateX(500px); }
+    #weather p {
+      margin: 5px 0;
+      font-size: 1rem;
+      font-weight: 500;
     }
 
     /* --- Social Links --- */
     .socials {
-      margin-top: 20px;
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
     }
-
     .socials a {
-      margin: 0 10px;
-      color: #00FF00;
       text-decoration: none;
-      transition: transform 0.3s, color 0.3s;
+      color: #555;
+      font-weight: 600;
+      transition: color 0.3s, transform 0.3s;
     }
-
     .socials a:hover {
+      color: #000;
       transform: scale(1.2);
-      color: #ffffff;
     }
 
     /* --- Loader --- */
     .loader {
-      border: 4px solid #00FF00;
-      border-top: 4px solid transparent;
+      border: 4px solid #ccc;
+      border-top: 4px solid #555;
       border-radius: 50%;
       width: 40px;
       height: 40px;
       margin: 20px auto;
       animation: spin 1s linear infinite;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* --- Weather Effects --- */
+    .raindrop, .cloud {
+      position: absolute;
+      opacity: 0.25;
+    }
+    .raindrop {
+      width: 2px;
+      height: 10px;
+      background: #555;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      to { transform: translateY(500px); opacity: 0; }
+    }
+    .cloud {
+      width: 60px;
+      height: 40px;
+      background: #ccc;
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateX(-100px); }
+      100% { transform: translateX(500px); }
+    }
   </style>
 </head>
 <body>
-  <div class="bg" id="bg"></div>
-
   <div class="dashboard" id="dashboard">
     <div class="intro" id="typing"></div>
     <div id="weather">
@@ -196,26 +201,20 @@
       document.querySelectorAll('.raindrop, .cloud').forEach(e => e.remove());
 
       // Reset glow
-      dashboard.style.boxShadow = '0 0 30px #00FF00';
-      document.body.style.background = 'linear-gradient(135deg, #0b0c10, #1f1f1f)';
+      dashboard.style.boxShadow = '0 20px 50px rgba(0,0,0,0.1)';
+      document.body.style.background = 'linear-gradient(135deg, #f0f0f5, #d9d9e6)';
 
       if(condition.includes('rain')) {
-        dashboard.style.boxShadow = '0 0 40px #1E90FF';
-        document.body.style.background = 'linear-gradient(135deg, #0b0c10, #00008B)';
-
-        // Add raindrops
-        for(let i=0;i<50;i++){
+        // Raindrops
+        for(let i=0;i<30;i++){
           const drop = document.createElement('div');
           drop.className='raindrop';
           drop.style.left=Math.random()*100+'%';
-          drop.style.animationDuration=0.5+Math.random()*1+'s';
+          drop.style.animationDuration=1+Math.random()*1+'s';
           dashboard.appendChild(drop);
         }
       } else if(condition.includes('cloud')) {
-        dashboard.style.boxShadow = '0 0 40px #888888';
-        document.body.style.background = 'linear-gradient(135deg, #2f2f2f, #555555)';
-
-        // Add clouds
+        // Clouds
         for(let i=0;i<5;i++){
           const cloud = document.createElement('div');
           cloud.className='cloud';
@@ -224,12 +223,6 @@
           cloud.style.animationDuration=5+Math.random()*5+'s';
           dashboard.appendChild(cloud);
         }
-      } else if(condition.includes('clear') || condition.includes('sun')) {
-        dashboard.style.boxShadow = '0 0 40px #FFD700';
-        document.body.style.background = 'linear-gradient(135deg, #1f1f1f, #333300)';
-      } else {
-        dashboard.style.boxShadow = '0 0 30px #00FF00';
-        document.body.style.background = 'linear-gradient(135deg, #0b0c10, #1f1f1f)';
       }
     }
   </script>
