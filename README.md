@@ -3,7 +3,14 @@
 </h1>
 
 <p align="center">
+  <br>
+  <a href="your-weather-page-link.html" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/LIVE_WEATHER-Check_your_weather_here-00FF00?style=for-the-badge&logo=icloud&logoColor=black" alt="Check Weather" />
+  </a>
+</p>
+
+<p align="center" style="margin-top: 30px;">
   <a href="https://www.linkedin.com/in/ankithva" target="_blank">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" width="40" height="40"/>
+    <img src="https://img.shields.io/badge/LinkedIn-Connect_with_Ankith-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn" height="35"/>
   </a>
 </p>
