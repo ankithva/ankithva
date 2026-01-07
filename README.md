@@ -8,6 +8,5 @@
   center=true&
   vCenter=true&
   width=600&
-  lines=Hi%2C+I'm+Ankith.V.A+👋;Weather+%26+Explorer+🌍;Turning+Data+Into+Insight+📊" />
+  lines=Hi%2C+I'm+Ankith+V+A+🔥;Weather+Explorer+🌦;Building+Cool+Stuff+with+Code+⚡" />
 </h1>
-
