@@ -24,35 +24,50 @@
   </style>
 </head>
 <body>
-  <h1>Hi! Here's your local weather 🌤️</h1>
-  <div id="weather">Fetching your weather...</div>
+  <h1>Hi! Here's your weather 🌤️</h1>
+  <div id="weather">Fetching weather...</div>
 
   <script>
+    const apiKey = "4b17183372e32d80f601432c06223f7f";
+
+    function displayWeather(data) {
+      const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+      document.getElementById("weather").innerHTML =
+        `<h2>${data.name}, ${data.sys.country}</h2>
+         <img src="${icon}" alt="Weather icon" width="80" height="80"/>
+         <p>${data.weather[0].main}</p>
+         <p>🌡️ Temp: ${data.main.temp}°C</p>
+         <p>💧 Humidity: ${data.main.humidity}%</p>
+         <p>🌬️ Wind: ${data.wind.speed} m/s</p>`;
+    }
+
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const apiKey = "4b17183372e32d80f601432c06223f7f";
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
-          .then(res => res.json())
-          .then(data => {
-            const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-            document.getElementById("weather").innerHTML =
-              `<h2>${data.name}, ${data.sys.country}</h2>
-               <img src="${icon}" alt="Weather icon" width="80" height="80"/>
-               <p>${data.weather[0].main}</p>
-               <p>🌡️ Temp: ${data.main.temp}°C</p>
-               <p>💧 Humidity: ${data.main.humidity}%</p>
-               <p>🌬️ Wind: ${data.wind.speed} m/s</p>`;
-          })
-          .catch(() => {
-            document.getElementById("weather").innerText = "Unable to fetch weather.";
-          });
-      }, () => {
-        document.getElementById("weather").innerText = "Location permission denied.";
-      });
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          // Fetch weather for visitor location
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
+            .then(res => res.json())
+            .then(displayWeather)
+            .catch(() => fetchFallback());
+        },
+        function() {
+          fetchFallback(); // If location denied
+        }
+      );
     } else {
-      document.getElementById("weather").innerText = "Geolocation not supported.";
+      fetchFallback(); // If geolocation unsupported
+    }
+
+    function fetchFallback() {
+      // Default city weather (New Delhi)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=New Delhi&units=metric&appid=${apiKey}`)
+        .then(res => res.json())
+        .then(displayWeather)
+        .catch(() => {
+          document.getElementById("weather").innerText = "Unable to fetch weather.";
+        });
     }
   </script>
 </body>
