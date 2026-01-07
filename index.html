@@ -1,31 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Weather Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Ankith's Weather Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
   <style>
+    /* Global Styles */
     body {
-      text-align: center;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0b0c10;
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      background: linear-gradient(to bottom, #0b0c10, #1f1f1f);
       color: #00FF00;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      flex-direction: column;
     }
-    h1 { margin-bottom: 20px; }
-    #weather {
-      background: rgba(0,0,0,0.5);
-      padding: 20px;
-      border-radius: 10px;
-      font-size: 1.2rem;
+
+    /* Dashboard Container */
+    .dashboard {
+      background: rgba(0,0,0,0.7);
+      border-radius: 20px;
+      padding: 40px 60px;
+      text-align: center;
+      box-shadow: 0 0 20px #00FF00;
+      max-width: 400px;
     }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin: 10px 0;
+      font-size: 1.5rem;
+    }
+
+    #weather-icon {
+      width: 100px;
+      height: 100px;
+    }
+
+    p {
+      margin: 5px 0;
+      font-size: 1.1rem;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    /* Loader animation */
+    .loader {
+      border: 4px solid #00FF00;
+      border-top: 4px solid transparent;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
   </style>
 </head>
 <body>
-  <h1>Hi! Here's your weather 🌤️</h1>
-  <div id="weather">Fetching weather...</div>
+  <div class="dashboard">
+    <h1>Ankith's Weather Dashboard 🌤️</h1>
+    <div id="weather">
+      <div class="loader"></div>
+    </div>
+    <div class="footer">
+      Powered by OpenWeatherMap | Default: New Delhi
+    </div>
+  </div>
 
   <script>
     const apiKey = "4b17183372e32d80f601432c06223f7f";
@@ -34,41 +90,38 @@
       const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
       document.getElementById("weather").innerHTML =
         `<h2>${data.name}, ${data.sys.country}</h2>
-         <img src="${icon}" alt="Weather icon" width="80" height="80"/>
+         <img id="weather-icon" src="${icon}" alt="Weather icon"/>
          <p>${data.weather[0].main}</p>
          <p>🌡️ Temp: ${data.main.temp}°C</p>
          <p>💧 Humidity: ${data.main.humidity}%</p>
          <p>🌬️ Wind: ${data.wind.speed} m/s</p>`;
     }
 
+    function fetchFallback() {
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=New Delhi&units=metric&appid=${apiKey}`)
+        .then(res => res.json())
+        .then(displayWeather)
+        .catch(() => {
+          document.getElementById("weather").innerHTML = "<p>Unable to fetch weather.</p>";
+        });
+    }
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         function(position) {
-          // Fetch weather for visitor location
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
           fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
             .then(res => res.json())
             .then(displayWeather)
-            .catch(() => fetchFallback());
+            .catch(fetchFallback);
         },
-        function() {
-          fetchFallback(); // If location denied
-        }
+        fetchFallback // if user denies geolocation
       );
     } else {
-      fetchFallback(); // If geolocation unsupported
-    }
-
-    function fetchFallback() {
-      // Default city weather (New Delhi)
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=New Delhi&units=metric&appid=${apiKey}`)
-        .then(res => res.json())
-        .then(displayWeather)
-        .catch(() => {
-          document.getElementById("weather").innerText = "Unable to fetch weather.";
-        });
+      fetchFallback();
     }
   </script>
 </body>
 </html>
+
