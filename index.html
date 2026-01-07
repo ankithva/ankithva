@@ -2,45 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ankith's Weather Dashboard</title>
+  <title>Ankith's Premium Weather Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
+    /* --- Global Styles --- */
     body {
       margin: 0;
       font-family: 'Fira Code', monospace;
-      background: linear-gradient(to bottom, #0b0c10, #1f1f1f);
-      color: #00FF00;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      flex-direction: column;
+      background: linear-gradient(135deg, #0b0c10, #1f1f1f);
+      overflow: hidden;
+      color: #00FF00;
     }
 
-    /* Dashboard Container */
+    /* --- Animated Weather Background --- */
+    .bg {
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      z-index:0;
+      background: url('https://i.ibb.co/0Vn8hD4/pixel-rain.gif') center/cover no-repeat;
+      opacity: 0.3;
+    }
+
+    /* --- Dashboard Container --- */
     .dashboard {
+      position: relative;
+      z-index:1;
       background: rgba(0,0,0,0.7);
-      border-radius: 20px;
-      padding: 40px 60px;
+      border-radius: 25px;
+      padding: 50px 60px;
       text-align: center;
-      box-shadow: 0 0 20px #00FF00;
-      max-width: 400px;
+      box-shadow: 0 0 30px #00FF00;
+      max-width: 450px;
+      width: 90%;
+      backdrop-filter: blur(8px);
     }
 
-    h1 {
-      margin-bottom: 10px;
-      font-size: 2rem;
-    }
-
-    h2 {
-      margin: 10px 0;
+    /* --- Typing Intro --- */
+    .intro {
       font-size: 1.5rem;
+      margin-bottom: 20px;
+      min-height: 40px;
     }
 
+    /* --- Weather Icon --- */
     #weather-icon {
       width: 100px;
       height: 100px;
+    }
+
+    /* --- Social Links --- */
+    .socials {
+      margin-top: 20px;
+    }
+
+    .socials a {
+      margin: 0 10px;
+      color: #00FF00;
+      text-decoration: none;
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .socials a:hover {
+      transform: scale(1.2);
+      color: #ffffff;
+    }
+
+    /* --- Weather Info --- */
+    h2 {
+      margin: 10px 0;
+      font-size: 1.4rem;
     }
 
     p {
@@ -48,13 +83,7 @@
       font-size: 1.1rem;
     }
 
-    .footer {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      opacity: 0.7;
-    }
-
-    /* Loader animation */
+    /* --- Loader --- */
     .loader {
       border: 4px solid #00FF00;
       border-top: 4px solid transparent;
@@ -69,23 +98,38 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
   </style>
 </head>
 <body>
+  <div class="bg"></div>
   <div class="dashboard">
-    <h1>Ankith's Weather Dashboard 🌤️</h1>
+    <div class="intro" id="typing"></div>
     <div id="weather">
       <div class="loader"></div>
     </div>
-    <div class="footer">
-      Powered by OpenWeatherMap | Default: New Delhi
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/ankithva" target="_blank">LinkedIn</a>
+      <a href="https://github.com/ankithva" target="_blank">GitHub</a>
+      <a href="https://twitter.com/ankithva" target="_blank">Twitter</a>
     </div>
   </div>
 
   <script>
     const apiKey = "4b17183372e32d80f601432c06223f7f";
 
+    // --- Typing effect ---
+    const introText = "Hi, I'm Ankith, a weather enthusiast from India 🌤️";
+    let i = 0;
+    function typeWriter() {
+      if(i < introText.length) {
+        document.getElementById("typing").innerHTML += introText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 80);
+      }
+    }
+    typeWriter();
+
+    // --- Weather Display ---
     function displayWeather(data) {
       const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
       document.getElementById("weather").innerHTML =
@@ -116,7 +160,7 @@
             .then(displayWeather)
             .catch(fetchFallback);
         },
-        fetchFallback // if user denies geolocation
+        fetchFallback
       );
     } else {
       fetchFallback();
@@ -124,4 +168,6 @@
   </script>
 </body>
 </html>
+
+
 
