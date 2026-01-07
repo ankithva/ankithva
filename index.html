@@ -1,230 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ankith's Premium Weather Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* --- Global Styles --- */
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #f0f0f5, #d9d9e6);
-      color: #1a1a1a;
-      overflow: hidden;
-      transition: background 1s ease;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ankith's Elite Weather Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
 
-    /* --- Dashboard Card --- */
-    .dashboard {
-      position: relative;
-      z-index: 1;
-      background: rgba(255,255,255,0.75);
-      border-radius: 30px;
-      padding: 50px 40px;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-      max-width: 450px;
-      width: 90%;
-      backdrop-filter: blur(15px);
-      transition: all 0.3s ease;
-    }
-    .dashboard:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* --- Intro Text --- */
-    .intro {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 25px;
-      min-height: 50px;
-      color: #111;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 1.5s ease;
+            overflow-x: hidden;
+        }
 
-    /* --- Weather Icon --- */
-    #weather-icon {
-      width: 120px;
-      height: 120px;
-      margin: 15px 0;
-    }
+        /* Animated Background Blobs */
+        .blob {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.15;
+            animation: move 20s infinite alternate;
+        }
 
-    /* --- Weather Info --- */
-    #weather h2 {
-      margin: 10px 0;
-      font-weight: 700;
-      font-size: 1.4rem;
-    }
-    #weather p {
-      margin: 5px 0;
-      font-size: 1rem;
-      font-weight: 500;
-    }
+        @keyframes move {
+            from { transform: translate(-20%, -20%); }
+            to { transform: translate(20%, 20%); }
+        }
 
-    /* --- Social Links --- */
-    .socials {
-      margin-top: 25px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    .socials a {
-      text-decoration: none;
-      color: #555;
-      font-weight: 600;
-      transition: color 0.3s, transform 0.3s;
-    }
-    .socials a:hover {
-      color: #000;
-      transform: scale(1.2);
-    }
+        .container {
+            width: 95%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
 
-    /* --- Loader --- */
-    .loader {
-      border: 4px solid #ccc;
-      border-top: 4px solid #555;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      margin: 20px auto;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        /* Left Side: Hero Section */
+        .hero-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
 
-    /* --- Weather Effects --- */
-    .raindrop, .cloud {
-      position: absolute;
-      opacity: 0.25;
-    }
-    .raindrop {
-      width: 2px;
-      height: 10px;
-      background: #555;
-      animation: fall linear infinite;
-    }
-    @keyframes fall {
-      to { transform: translateY(500px); opacity: 0; }
-    }
-    .cloud {
-      width: 60px;
-      height: 40px;
-      background: #ccc;
-      border-radius: 50%;
-      animation: float linear infinite;
-    }
-    @keyframes float {
-      0% { transform: translateX(-100px); }
-      100% { transform: translateX(500px); }
-    }
-  </style>
+        .location-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            width: fit-content;
+        }
+
+        .temp-display {
+            font-size: 8rem;
+            font-weight: 800;
+            margin: 20px 0;
+            letter-spacing: -4px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Right Side: Bento Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover { transform: translateY(-5px); background: rgba(255,255,255,0.05); }
+
+        .stat-box i { font-size: 1.5rem; color: var(--accent); margin-bottom: 12px; }
+        .stat-box span { display: block; color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-box h3 { font-size: 1.4rem; margin-top: 5px; }
+
+        /* Socials & Profile */
+        .profile-card {
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 20px 30px;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .social-links a {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            margin-left: 15px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover { color: var(--accent); }
+
+        .typing-effect {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            min-height: 1.5em;
+        }
+
+        /* Loader */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .temp-display { font-size: 5rem; }
+        }
+    </style>
 </head>
 <body>
-  <div class="dashboard" id="dashboard">
-    <div class="intro" id="typing"></div>
-    <div id="weather">
-      <div class="loader"></div>
+
+    <div class="blob"></div>
+    <div class="loader" id="loader">
+        <i class="ph-duotone ph-sun-dim" style="font-size: 3rem; color: var(--accent); animation: spin 2s linear infinite;"></i>
     </div>
-    <div class="socials">
-      <a href="https://www.linkedin.com/in/ankithva" target="_blank">LinkedIn</a>
-      <a href="https://github.com/ankithva" target="_blank">GitHub</a>
-      <a href="https://twitter.com/ankithva" target="_blank">Twitter</a>
-    </div>
-  </div>
 
-  <script>
-    const apiKey = "4b17183372e32d80f601432c06223f7f";
+    <main class="container">
+        <section class="hero-card">
+            <div>
+                <div class="location-tag">
+                    <i class="ph-fill ph-navigation-arrow"></i>
+                    <span id="city">Fetching Location...</span>
+                </div>
+                <h1 class="temp-display" id="main-temp">--°</h1>
+                <h2 id="description" style="font-size: 1.5rem; text-transform: capitalize;">Clear Sky</h2>
+            </div>
+            
+            <div class="typing-container">
+                <p class="typing-effect" id="typing"></p>
+            </div>
+        </section>
 
-    // --- Typing Effect ---
-    const introText = "Hi, I'm Ankith, a weather enthusiast from India 🌤️";
-    let i = 0;
-    function typeWriter() {
-      if(i < introText.length) {
-        document.getElementById("typing").innerHTML += introText.charAt(i);
-        i++;
-        setTimeout(typeWriter, 80);
-      }
-    }
-    typeWriter();
+        <section class="stats-grid">
+            <div class="stat-box">
+                <i class="ph-duotone ph-drop"></i>
+                <span>Humidity</span>
+                <h3 id="humidity">--%</h3>
+            </div>
+            <div class="stat-box">
+                <i class="ph-duotone ph-wind"></i>
+                <span>Wind Speed</span>
+                <h3 id="wind">-- km/h</h3>
+            </div>
+            <div class="stat-box">
+                <i class="ph-duotone ph-thermometer-hot"></i>
+                <span>Feels Like</span>
+                <h3 id="feels-like">--°</h3>
+            </div>
+            <div class="stat-box">
+                <i class="ph-duotone ph-cloud-sun"></i>
+                <span>Pressure</span>
+                <h3 id="pressure">-- hPa</h3>
+            </div>
 
-    // --- Weather Display ---
-    function displayWeather(data) {
-      const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-      const condition = data.weather[0].main.toLowerCase();
-      document.getElementById("weather").innerHTML =
-        `<h2>${data.name}, ${data.sys.country}</h2>
-         <img id="weather-icon" src="${icon}" alt="Weather icon"/>
-         <p>${data.weather[0].main}</p>
-         <p>🌡️ Temp: ${data.main.temp}°C</p>
-         <p>💧 Humidity: ${data.main.humidity}%</p>
-         <p>🌬️ Wind: ${data.wind.speed} m/s</p>`;
+            <div class="profile-card">
+                <div>
+                    <h4 style="font-weight: 600;">Ankith V.A.</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">Weather Enthusiast</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://github.com/ankithva" target="_blank"><i class="ph ph-github-logo"></i></a>
+                    <a href="https://linkedin.com/in/ankithva" target="_blank"><i class="ph ph-linkedin-logo"></i></a>
+                    <a href="https://twitter.com/ankithva" target="_blank"><i class="ph ph-twitter-logo"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-      applyWeatherEffects(condition);
-    }
+    <script>
+        const apiKey = "4b17183372e32d80f601432c06223f7f";
 
-    function fetchFallback() {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=New Delhi&units=metric&appid=${apiKey}`)
-        .then(res => res.json())
-        .then(displayWeather)
-        .catch(() => {
-          document.getElementById("weather").innerHTML = "<p>Unable to fetch weather.</p>";
-        });
-    }
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
-            .then(res => res.json())
-            .then(displayWeather)
-            .catch(fetchFallback);
-        },
-        fetchFallback
-      );
-    } else {
-      fetchFallback();
-    }
-
-    // --- Weather Effects ---
-    function applyWeatherEffects(condition) {
-      const dashboard = document.getElementById('dashboard');
-      document.querySelectorAll('.raindrop, .cloud').forEach(e => e.remove());
-
-      // Reset glow
-      dashboard.style.boxShadow = '0 20px 50px rgba(0,0,0,0.1)';
-      document.body.style.background = 'linear-gradient(135deg, #f0f0f5, #d9d9e6)';
-
-      if(condition.includes('rain')) {
-        // Raindrops
-        for(let i=0;i<30;i++){
-          const drop = document.createElement('div');
-          drop.className='raindrop';
-          drop.style.left=Math.random()*100+'%';
-          drop.style.animationDuration=1+Math.random()*1+'s';
-          dashboard.appendChild(drop);
+        // Typing Effect
+        const text = "Designing the future of weather tracking.";
+        let index = 0;
+        function type() {
+            if (index < text.length) {
+                document.getElementById("typing").innerHTML += text.charAt(index);
+                index++;
+                setTimeout(type, 50);
+            }
         }
-      } else if(condition.includes('cloud')) {
-        // Clouds
-        for(let i=0;i<5;i++){
-          const cloud = document.createElement('div');
-          cloud.className='cloud';
-          cloud.style.top=Math.random()*30+'px';
-          cloud.style.left=-100-i*100+'px';
-          cloud.style.animationDuration=5+Math.random()*5+'s';
-          dashboard.appendChild(cloud);
+
+        async function updateWeather(lat, lon) {
+            try {
+                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`);
+                const data = await res.json();
+                
+                // Update UI
+                document.getElementById("city").innerText = `${data.name}, ${data.sys.country}`;
+                document.getElementById("main-temp").innerText = `${Math.round(data.main.temp)}°`;
+                document.getElementById("description").innerText = data.weather[0].description;
+                document.getElementById("humidity").innerText = `${data.main.humidity}%`;
+                document.getElementById("wind").innerText = `${data.wind.speed} km/h`;
+                document.getElementById("feels-like").innerText = `${Math.round(data.main.feels_like)}°`;
+                document.getElementById("pressure").innerText = `${data.main.pressure} hPa`;
+
+                // Dynamic background based on temp
+                if(data.main.temp > 25) {
+                    document.body.style.background = "linear-gradient(135deg, #451a03 0%, #0f172a 100%)";
+                    document.documentElement.style.setProperty('--accent', '#fbbf24');
+                } else if(data.main.temp < 15) {
+                    document.body.style.background = "linear-gradient(135deg, #0c4a6e 0%, #0f172a 100%)";
+                    document.documentElement.style.setProperty('--accent', '#38bdf8');
+                }
+
+                document.getElementById("loader").style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById("loader").style.display = "none";
+                    type();
+                }, 500);
+
+            } catch (error) {
+                console.error("Error fetching weather:", error);
+            }
         }
-      }
-    }
-  </script>
+
+        // Location Logic
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => updateWeather(pos.coords.latitude, pos.coords.longitude),
+                () => updateWeather(28.6139, 77.2090) // Fallback to New Delhi
+            );
+        } else {
+            updateWeather(28.6139, 77.2090);
+        }
+
+        // CSS Animation for loader icon
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes spin { to { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
